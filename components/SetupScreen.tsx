@@ -169,7 +169,9 @@ export default function SetupScreen({ onSetupComplete }: SetupScreenProps) {
       <View style={styles.disclaimer}>
         <Text style={styles.disclaimerText}>
           This is an unofficial mobile interface for aaPanel.
-          Make sure your panel is accessible from this device.
+          Make sure your panel is accessible from this device, and you turn on the api service in the panel settings.
+          {'\n\n'}
+          If you encounter any issues, please check the panel URL and API key, and ensure your device is connected to the same network as the panel.
         </Text>
       </View>
     </ScrollView>

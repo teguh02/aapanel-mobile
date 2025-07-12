@@ -13,16 +13,18 @@ import {
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BarChart, PieChart } from 'react-native-chart-kit';
+import { BarChart } from 'react-native-chart-kit';
 import { AaPanelApi, SystemTotal, DiskInfo, NetworkInfo } from '@/services/AaPanelApi';
 import SetupScreen from '@/components/SetupScreen';
 import { Cpu, HardDrive, Wifi, Server, Settings } from 'lucide-react-native';
 import Colors from '@/constants/Colors';
+import { useRouter } from 'expo-router';
 
 const screenWidth = Dimensions.get('window').width;
 
 export default function StatsScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const [isConfigured, setIsConfigured] = useState<boolean | null>(null);
   const [systemData, setSystemData] = useState<SystemTotal | null>(null);
   const [diskData, setDiskData] = useState<DiskInfo[]>([]);
@@ -75,30 +77,7 @@ export default function StatsScreen() {
   }, []); // Run only once on mount
 
   const handleEditConfiguration = () => {
-    Alert.alert(
-      'Edit Configuration',
-      'Do you want to update your panel URL and API key?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { 
-          text: 'Edit', 
-          onPress: async () => {
-            try {
-              await AsyncStorage.removeItem('panel_url');
-              await AsyncStorage.removeItem('api_key');
-              setIsConfigured(false);
-              setApi(null);
-              setSystemData(null);
-              setDiskData([]);
-              setNetworkData(null);
-            } catch (error) {
-              console.error('Error clearing configuration:', error);
-              Alert.alert('Error', 'Failed to clear configuration');
-            }
-          }
-        },
-      ]
-    );
+    router.push('/settings');
   };
   const fetchData = React.useCallback(async (apiInstance?: AaPanelApi, showLoadingIndicator: boolean = true) => {
     const apiToUse = apiInstance || api;
@@ -149,28 +128,7 @@ export default function StatsScreen() {
     }
   }, [api]);
 
-  const handleSetupComplete = () => {
-    checkConfiguration();
-  };
-
-  if (isConfigured === null) {
-    return null; // Or a blank View if preferred
-  }
-
-  if (!isConfigured) {
-    return <SetupScreen onSetupComplete={handleSetupComplete} />;
-  }
-
-  const formatBytes = (bytes: number | undefined | null) => {
-    if (bytes === undefined || bytes === null || isNaN(bytes)) return '(no data)';
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
-
-  const checkConfiguration = async () => {
+  const checkConfiguration = React.useCallback(async () => {
     try {
       const panelUrl = await AsyncStorage.getItem('panel_url');
       const apiKey = await AsyncStorage.getItem('api_key');
@@ -194,6 +152,27 @@ export default function StatsScreen() {
       setDiskData([]);
       setNetworkData(null);
     }
+  }, [fetchData]);
+
+  const handleSetupComplete = React.useCallback(() => {
+    checkConfiguration();
+  }, [checkConfiguration]);
+
+  if (isConfigured === null) {
+    return null; // Or a blank View if preferred
+  }
+
+  if (!isConfigured) {
+    return <SetupScreen onSetupComplete={handleSetupComplete} />;
+  }
+
+  const formatBytes = (bytes: number | undefined | null) => {
+    if (bytes === undefined || bytes === null || isNaN(bytes)) return '(no data)';
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   const getMemoryUsagePercent = () => {
@@ -231,8 +210,13 @@ export default function StatsScreen() {
         contentContainerStyle={{ flexGrow: 1 }}
       >
       <View style={dynamicStyles.header}>
-        <Server size={32} color={themeColors.tint} />
-        <Text style={dynamicStyles.title}>Statistics</Text>
+        <View style={dynamicStyles.headerLeft}>
+          <Server size={32} color={themeColors.tint} />
+          <Text style={dynamicStyles.title}>Statistics</Text>
+        </View>
+        <TouchableOpacity onPress={handleEditConfiguration} style={dynamicStyles.settingsButton}>
+          <Settings size={24} color={themeColors.text} />
+        </TouchableOpacity>
       </View>
 
       <>

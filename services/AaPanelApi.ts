@@ -65,6 +65,10 @@ export interface NetworkInfo {
     memRealUsed: number;
     memTotal: number;
   };
+  site_total: number;
+  system: string;
+  time: string;
+  title: string;
   up: number;
   upPackets: number;
   upTotal: number;
@@ -74,10 +78,6 @@ export interface NetworkInfo {
     status: boolean;
   };
   version: string;
-  site_total: number;
-  system: string;
-  time: string;
-  title: string;
 }
 
 export interface Site {
