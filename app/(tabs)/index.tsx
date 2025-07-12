@@ -24,8 +24,6 @@ const screenWidth = Dimensions.get('window').width;
 export default function StatsScreen() {
   const insets = useSafeAreaInsets();
   const [isConfigured, setIsConfigured] = useState<boolean | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
   const [systemData, setSystemData] = useState<SystemTotal | null>(null);
   const [diskData, setDiskData] = useState<DiskInfo[]>([]);
   const [networkData, setNetworkData] = useState<NetworkInfo | null>(null);
@@ -38,7 +36,20 @@ export default function StatsScreen() {
 
   useEffect(() => {
     checkConfiguration();
-  }, []);
+
+    let intervalId: NodeJS.Timeout;
+    if (isConfigured) {
+      intervalId = setInterval(() => {
+        fetchData(undefined, false);
+      }, 5000); // Refresh every 5 seconds
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isConfigured, api]);
 
   const checkConfiguration = async () => {
     try {
@@ -48,7 +59,7 @@ export default function StatsScreen() {
       if (panelUrl && apiKey) {
         setApi(new AaPanelApi(panelUrl, apiKey));
         setIsConfigured(true);
-        fetchData(new AaPanelApi(panelUrl, apiKey));
+        fetchData(new AaPanelApi(panelUrl, apiKey), true);
       } else {
         setIsConfigured(false);
       }
@@ -84,11 +95,10 @@ export default function StatsScreen() {
       ]
     );
   };
-  const fetchData = async (apiInstance?: AaPanelApi) => {
+  const fetchData = React.useCallback(async (apiInstance?: AaPanelApi, showLoadingIndicator: boolean = true) => {
     const apiToUse = apiInstance || api;
     if (!apiToUse) return;
 
-    setLoading(true);
     try {
       const [systemTotal, diskInfo, networkInfo] = await Promise.all([
         apiToUse.getSystemTotal(),
@@ -127,15 +137,8 @@ export default function StatsScreen() {
         ]
       );
     } finally {
-      setLoading(false);
-      setRefreshing(false);
     }
-  };
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    fetchData();
-  };
+  }, [api]);
 
   const handleSetupComplete = () => {
     checkConfiguration();
@@ -201,24 +204,13 @@ export default function StatsScreen() {
       <ScrollView
         style={dynamicStyles.container}
         contentContainerStyle={{ flexGrow: 1 }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={themeColors.tint} />}
       >
       <View style={dynamicStyles.header}>
         <Server size={32} color={themeColors.tint} />
         <Text style={dynamicStyles.title}>Statistics</Text>
       </View>
 
-      {loading && !refreshing ? (
-        <>
-          <View style={dynamicStyles.loadingContainer}>
-            <ActivityIndicator size="large" color={themeColors.tint} />
-          </View>
-          <TouchableOpacity style={dynamicStyles.settingsButton} onPress={handleEditConfiguration}>
-            <Settings size={24} color={themeColors.tabIconDefault} />
-          </TouchableOpacity>
-        </>
-      ) : (
-        <>
+      <>
           {/* System Info Cards */}
           <View style={dynamicStyles.cardsContainer}>
             <View style={dynamicStyles.card}>
@@ -331,7 +323,6 @@ export default function StatsScreen() {
             </View>
           )}
         </>
-      )}
     </ScrollView>
   );
 }
