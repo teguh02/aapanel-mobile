@@ -300,7 +300,6 @@ export default function SitesScreen() {
                           <StopCircle size={16} color="#FFFFFF" />
                           <Text style={dynamicStyles.actionButtonText}>Stop</Text>
                         </>
-                      }
                     </TouchableOpacity>
                   ) : (
                     <TouchableOpacity
@@ -347,6 +346,70 @@ export default function SitesScreen() {
                         <Text style={dynamicStyles.detailValue}>{site.ssl.notAfter}</Text>
                       </View>
                     )}
+                    <View style={dynamicStyles.detailRow}>
+                      <Text style={dynamicStyles.detailLabel}>Domain:</Text>
+                      <Text style={dynamicStyles.detailValue}>{site.domain}</Text>
+                    </View>
+                    <View style={dynamicStyles.detailRow}>
+                      <Text style={dynamicStyles.detailLabel}>Edate:</Text>
+                      <Text style={dynamicStyles.detailValue}>{site.edate}</Text>
+                    </View>
+                    <View style={dynamicStyles.detailRow}>
+                      <Text style={dynamicStyles.detailLabel}>PS:</Text>
+                      <Text style={dynamicStyles.detailValue}>{site.ps}</Text>
+                    </View>
+                    {site.quota && (
+                      <>
+                        <View style={dynamicStyles.detailRow}>
+                          <Text style={dynamicStyles.detailLabel}>Quota Free:</Text>
+                          <Text style={dynamicStyles.detailValue}>{site.quota.free}</Text>
+                        </View>
+                        <View style={dynamicStyles.detailRow}>
+                          <Text style={dynamicStyles.detailLabel}>Quota Size:</Text>
+                          <Text style={dynamicStyles.detailValue}>{site.quota.size}</Text>
+                        </View>
+                        <View style={dynamicStyles.detailRow}>
+                          <Text style={dynamicStyles.detailLabel}>Quota Used:</Text>
+                          <Text style={dynamicStyles.detailValue}>{site.quota.used}</Text>
+                        </View>
+                      </>
+                    )}
+                    <View style={dynamicStyles.detailRow}>
+                      <Text style={dynamicStyles.detailLabel}>Rname:</Text>
+                      <Text style={dynamicStyles.detailValue}>{site.rname}</Text>
+                    </View>
+                    <View style={dynamicStyles.detailRow}>
+                      <Text style={dynamicStyles.detailLabel}>Site SSL:</Text>
+                      <Text style={dynamicStyles.detailValue}>{site.site_ssl}</Text>
+                    </View>
+                    {site.ssl && (
+                      <>
+                        <View style={dynamicStyles.detailRow}>
+                          <Text style={dynamicStyles.detailLabel}>SSL DNS:</Text>
+                          <Text style={dynamicStyles.detailValue}>{site.ssl.dns ? site.ssl.dns.join(', ') : 'N/A'}</Text>
+                        </View>
+                        <View style={dynamicStyles.detailRow}>
+                          <Text style={dynamicStyles.detailLabel}>SSL Endtime:</Text>
+                          <Text style={dynamicStyles.detailValue}>{site.ssl.endtime}</Text>
+                        </View>
+                        <View style={dynamicStyles.detailRow}>
+                          <Text style={dynamicStyles.detailLabel}>SSL Issuer:</Text>
+                          <Text style={dynamicStyles.detailValue}>{site.ssl.issuer || 'N/A'}</Text>
+                        </View>
+                        <View style={dynamicStyles.detailRow}>
+                          <Text style={dynamicStyles.detailLabel}>SSL Not Before:</Text>
+                          <Text style={dynamicStyles.detailValue}>{site.ssl.notBefore}</Text>
+                        </View>
+                        <View style={dynamicStyles.detailRow}>
+                          <Text style={dynamicStyles.detailLabel}>SSL Subject:</Text>
+                          <Text style={dynamicStyles.detailValue}>{site.ssl.subject}</Text>
+                        </View>
+                      </>
+                    )}
+                    <View style={dynamicStyles.detailRow}>
+                      <Text style={dynamicStyles.detailLabel}>Attack:</Text>
+                      <Text style={dynamicStyles.detailValue}>{site.attack}</Text>
+                    </View>
                   </View>
                 )}
               </View>
