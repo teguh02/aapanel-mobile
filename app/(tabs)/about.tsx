@@ -7,12 +7,19 @@ import {
   TouchableOpacity,
   Linking,
   Alert,
+  useColorScheme,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Info, Mail, User, TriangleAlert as AlertTriangle, Heart, Code, Settings, Github, Share2 } from 'lucide-react-native';
 import { Share } from 'react-native';
+import Colors from '@/constants/Colors';
 
 export default function AboutScreen() {
+  const colorScheme = useColorScheme();
+  const themeColors = colorScheme === 'dark' ? Colors.dark : Colors.light;
+
+  const dynamicStyles = getDynamicStyles(themeColors);
+
   const handleEmailPress = () => {
     const email = 'teguhrijanandi02@gmail.com';
     const subject = 'AaPanel Mobile App';
@@ -77,104 +84,108 @@ export default function AboutScreen() {
     }
   };
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Info size={32} color="#3B82F6" />
-          <Text style={styles.title}>About</Text>
+    <ScrollView style={dynamicStyles.container}>
+      <View style={dynamicStyles.header}>
+        <View style={dynamicStyles.headerLeft}>
+          <Info size={32} color={themeColors.tint} />
+          <Text style={dynamicStyles.title}>About</Text>
         </View>
-        <TouchableOpacity style={styles.settingsButton} onPress={handleEditConfiguration}>
-          <Settings size={24} color="#6B7280" />
+        <TouchableOpacity style={dynamicStyles.settingsButton} onPress={handleEditConfiguration}>
+          <Settings size={24} color={themeColors.tabIconDefault} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.settingsButton} onPress={handleSharePress}>
-          <Share2 size={24} color="#6B7280" />
+        <TouchableOpacity style={dynamicStyles.settingsButton} onPress={handleSharePress}>
+          <Share2 size={24} color={themeColors.tabIconDefault} />
         </TouchableOpacity>
       </View>
 
       {/* App Info */}
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <Code size={24} color="#3B82F6" />
-          <Text style={styles.cardTitle}>AaPanel Mobile</Text>
+      <View style={dynamicStyles.card}>
+        <View style={dynamicStyles.cardHeader}>
+          <Code size={24} color={themeColors.tint} />
+          <Text style={dynamicStyles.cardTitle}>AaPanel Mobile</Text>
         </View>
-        <Text style={styles.cardDescription}>
+        <Text style={dynamicStyles.cardDescription}>
           An unofficial mobile interface for aaPanel server management.
           Monitor your server statistics and manage websites on the go.
         </Text>
-        <View style={styles.versionContainer}>
-          <Text style={styles.versionText}>Version 1.0.0</Text>
+        <View style={dynamicStyles.versionContainer}>
+          <Text style={dynamicStyles.versionText}>Version 1.0.0</Text>
         </View>
       </View>
 
       {/* Creator Info */}
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
+      <View style={dynamicStyles.card}>
+        <View style={dynamicStyles.cardHeader}>
           <User size={24} color="#10B981" />
-          <Text style={styles.cardTitle}>Creator</Text>
+          <Text style={dynamicStyles.cardTitle}>Creator</Text>
         </View>
-        <View style={styles.creatorInfo}>
-          <Text style={styles.creatorName}>Teguh Rijanandi</Text>
-          <TouchableOpacity style={styles.emailButton} onPress={handleEmailPress}>
-            <Mail size={16} color="#3B82F6" />
-            <Text style={styles.emailText}>teguhrijanandi02@gmail.com</Text>
+        <View style={dynamicStyles.creatorInfo}>
+          <Text style={dynamicStyles.creatorName}>Teguh Rijanandi</Text>
+          <TouchableOpacity style={dynamicStyles.emailButton} onPress={handleEmailPress}>
+            <Mail size={16} color={themeColors.tint} />
+            <Text style={dynamicStyles.emailText}>teguhrijanandi02@gmail.com</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.githubButton} onPress={() => Linking.openURL('https://github.com/teguh02/aapanel-mobile')}>
-            <Github size={16} color="#1F2937" />
-            <Text style={styles.githubText}>teguh02/aapanel-mobile</Text>
+          <TouchableOpacity style={dynamicStyles.githubButton} onPress={() => Linking.openURL('https://github.com/teguh02/aapanel-mobile')}>
+            <Github size={16} color={themeColors.text} />
+            <Text style={dynamicStyles.githubText}>teguh02/aapanel-mobile</Text>
           </TouchableOpacity>
         </View>
       </View>
 
       {/* Disclaimer */}
-      <View style={styles.disclaimerCard}>
-        <View style={styles.cardHeader}>
+      <View style={dynamicStyles.disclaimerCard}>
+        <View style={dynamicStyles.cardHeader}>
           <AlertTriangle size={24} color="#F59E0B" />
-          <Text style={styles.cardTitle}>Disclaimer</Text>
+          <Text style={dynamicStyles.cardTitle}>Disclaimer</Text>
         </View>
-        <Text style={styles.disclaimerText}>
+        <Text style={dynamicStyles.disclaimerText}>
           This app is an unofficial mobile interface for aaPanel.
           It was independently developed as part of the author's personal hobby project,
           with the intent to provide a lightweight alternative for managing servers via smartphone.
         </Text>
-        <Text style={styles.disclaimerText}>
+        <Text style={dynamicStyles.disclaimerText}>
           This application is not affiliated with or endorsed by the official aaPanel team.
         </Text>
       </View>
 
       {/* Features */}
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
+      <View style={dynamicStyles.card}>
+        <View style={dynamicStyles.cardHeader}>
           <Heart size={24} color="#EF4444" />
-          <Text style={styles.cardTitle}>Features</Text>
+          <Text style={dynamicStyles.cardTitle}>Features</Text>
         </View>
-        <View style={styles.featuresList}>
-          <View style={styles.featureItem}>
-            <View style={styles.featureBullet} />
-            <Text style={styles.featureText}>Real-time system monitoring</Text>
+        <View style={dynamicStyles.featuresList}>
+          <View style={dynamicStyles.featureItem}>
+            <View style={dynamicStyles.featureBullet} />
+            <Text style={dynamicStyles.featureText}>Real-time system monitoring</Text>
           </View>
-          <View style={styles.featureItem}>
-            <View style={styles.featureBullet} />
-            <Text style={styles.featureText}>Website management (Start/Stop)</Text>
+          <View style={dynamicStyles.featureItem}>
+            <View style={dynamicStyles.featureBullet} />
+            <Text style={dynamicStyles.featureText}>Website management (Start/Stop)</Text>
           </View>
-          <View style={styles.featureItem}>
-            <View style={styles.featureBullet} />
-            <Text style={styles.featureText}>CPU and memory usage charts</Text>
+          <View style={dynamicStyles.featureItem}>
+            <View style={dynamicStyles.featureBullet} />
+            <Text style={dynamicStyles.featureText}>CPU and memory usage charts</Text>
           </View>
-          <View style={styles.featureItem}>
-            <View style={styles.featureBullet} />
-            <Text style={styles.featureText}>Disk usage visualization</Text>
+          <View style={dynamicStyles.featureItem}>
+            <View style={dynamicStyles.featureBullet} />
+            <Text style={dynamicStyles.featureText}>Disk usage visualization</Text>
           </View>
-          <View style={styles.featureItem}>
-            <View style={styles.featureBullet} />
-            <Text style={styles.featureText}>Network statistics</Text>
+          <View style={dynamicStyles.featureItem}>
+            <View style={dynamicStyles.featureBullet} />
+            <Text style={dynamicStyles.featureText}>Network statistics</Text>
           </View>
-          <View style={styles.featureItem}>
-            <View style={styles.featureBullet} />
-            <Text style={styles.featureText}>Secure API authentication</Text>
+          <View style={dynamicStyles.featureItem}>
+            <View style={dynamicStyles.featureBullet} />
+            <Text style={dynamicStyles.featureText}>Secure API authentication</Text>
           </View>
-          <View style={styles.featureItem}>
-            <View style={styles.featureBullet} />
-            <Text style={styles.featureText}>Configuration management</Text>
+          <View style={dynamicStyles.featureItem}>
+            <View style={dynamicStyles.featureBullet} />
+            <Text style={dynamicStyles.featureText}>Configuration management</Text>
+          </View>
+          <View style={dynamicStyles.featureItem}>
+            <View style={dynamicStyles.featureBullet} />
+            <Text style={dynamicStyles.featureText}>Auto Dark Mode</Text>
           </View>
         </View>
       </View>
@@ -182,11 +193,11 @@ export default function AboutScreen() {
       
 
       {/* Footer */}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
+      <View style={dynamicStyles.footer}>
+        <Text style={dynamicStyles.footerText}>
           Made with ❤️ for the server administration community
         </Text>
-        <Text style={styles.footerSubtext}>
+        <Text style={dynamicStyles.footerSubtext}>
           Open source • Hobby project • Not for commercial use
         </Text>
       </View>
@@ -194,10 +205,10 @@ export default function AboutScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getDynamicStyles = (themeColors: typeof Colors.light) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: themeColors.background,
   },
   header: {
     flexDirection: 'row',
@@ -215,35 +226,35 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: themeColors.text,
     marginLeft: 12,
   },
   settingsButton: {
     padding: 8,
     borderRadius: 8,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: themeColors.tabBarBorder,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: themeColors.tabBarBackground,
     margin: 24,
     marginTop: 0,
     padding: 20,
     borderRadius: 16,
-    shadowColor: '#000',
+    shadowColor: themeColors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
   disclaimerCard: {
-    backgroundColor: '#FFFBEB',
+    backgroundColor: '#FFFBEB', // Specific warning color
     margin: 24,
     marginTop: 0,
     padding: 20,
     borderRadius: 16,
     borderLeftWidth: 4,
-    borderLeftColor: '#F59E0B',
-    shadowColor: '#000',
+    borderLeftColor: '#F59E0B', // Specific warning color
+    shadowColor: themeColors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -257,12 +268,12 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: themeColors.text,
     marginLeft: 12,
   },
   cardDescription: {
     fontSize: 16,
-    color: '#6B7280',
+    color: themeColors.tabIconDefault,
     lineHeight: 24,
     marginBottom: 16,
   },
@@ -271,7 +282,7 @@ const styles = StyleSheet.create({
   },
   versionText: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: themeColors.tabIconDefault,
     fontWeight: '600',
   },
   creatorInfo: {
@@ -280,27 +291,27 @@ const styles = StyleSheet.create({
   creatorName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: themeColors.text,
     marginBottom: 12,
   },
   emailButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EFF6FF',
+    backgroundColor: themeColors.tabBarBorder,
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 8,
   },
   emailText: {
     fontSize: 16,
-    color: '#3B82F6',
+    color: themeColors.tint,
     marginLeft: 8,
     fontWeight: '600',
   },
   githubButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E5E7EB',
+    backgroundColor: themeColors.tabBarBorder,
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 8,
@@ -308,13 +319,13 @@ const styles = StyleSheet.create({
   },
   githubText: {
     fontSize: 16,
-    color: '#1F2937',
+    color: themeColors.text,
     marginLeft: 8,
     fontWeight: '600',
   },
   disclaimerText: {
     fontSize: 14,
-    color: '#92400E',
+    color: '#92400E', // Specific warning text color
     lineHeight: 20,
     marginBottom: 12,
   },
@@ -330,12 +341,12 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#3B82F6',
+    backgroundColor: themeColors.tint,
     marginRight: 12,
   },
   featureText: {
     fontSize: 16,
-    color: '#4B5563',
+    color: themeColors.tabIconDefault,
     flex: 1,
   },
   
@@ -346,13 +357,13 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 16,
-    color: '#6B7280',
+    color: themeColors.tabIconDefault,
     textAlign: 'center',
     marginBottom: 8,
   },
   footerSubtext: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: themeColors.tabIconDefault,
     textAlign: 'center',
   },
 });

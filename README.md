@@ -19,6 +19,7 @@
   - List of all websites
   - Start and stop site actions
 - ℹ️ About page with creator info
+- 🌓 Auto Dark Mode (adapts to system theme)
 
 ---
 

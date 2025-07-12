@@ -1,20 +1,24 @@
 import { Tabs } from 'expo-router';
 import { ChartBar as BarChart3, Globe, Info } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useColorScheme } from 'react-native';
+import Colors from '@/constants/Colors';
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
+  const colorScheme = useColorScheme();
+  const themeColors = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#3B82F6',
-        tabBarInactiveTintColor: '#6B7280',
+        tabBarActiveTintColor: themeColors.tabIconSelected,
+        tabBarInactiveTintColor: themeColors.tabIconDefault,
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
+          backgroundColor: themeColors.tabBarBackground,
           borderTopWidth: 1,
-          borderTopColor: '#E5E7EB',
+          borderTopColor: themeColors.tabBarBorder,
           paddingBottom: insets.bottom + 8,
           paddingTop: 8,
         },

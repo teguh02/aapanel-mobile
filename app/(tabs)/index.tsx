@@ -9,6 +9,7 @@ import {
   Alert,
   Dimensions,
   TouchableOpacity,
+  useColorScheme,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,6 +17,7 @@ import { BarChart, PieChart } from 'react-native-chart-kit';
 import { AaPanelApi, SystemTotal, DiskInfo, NetworkInfo } from '@/services/AaPanelApi';
 import SetupScreen from '@/components/SetupScreen';
 import { Cpu, HardDrive, Wifi, Server, Settings } from 'lucide-react-native';
+import Colors from '@/constants/Colors';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -28,6 +30,11 @@ export default function StatsScreen() {
   const [diskData, setDiskData] = useState<DiskInfo[]>([]);
   const [networkData, setNetworkData] = useState<NetworkInfo | null>(null);
   const [api, setApi] = useState<AaPanelApi | null>(null);
+
+  const colorScheme = useColorScheme();
+  const themeColors = colorScheme === 'dark' ? Colors.dark : Colors.light;
+
+  const dynamicStyles = getDynamicStyles(themeColors);
 
   useEffect(() => {
     checkConfiguration();
@@ -136,8 +143,8 @@ export default function StatsScreen() {
 
   if (isConfigured === null) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#3B82F6" />
+      <View style={dynamicStyles.loadingContainer}>
+        <ActivityIndicator size="large" color={themeColors.tint} />
       </View>
     );
   }
@@ -170,7 +177,7 @@ export default function StatsScreen() {
       name: disk.path,
       population: parseInt((disk.percent || '0').replace('%', '')),
       color: `hsl(${index * 60}, 70%, 50%)`,
-      legendFontColor: '#7F7F7F',
+      legendFontColor: themeColors.tabIconDefault,
       legendFontSize: 12,
     }));
   };
@@ -183,7 +190,7 @@ export default function StatsScreen() {
           data: [getCpuUsagePercent(), getMemoryUsagePercent()],
           colors: [
             () => '#EF4444',
-            () => '#3B82F6',
+            () => themeColors.tint,
           ],
         },
       ],
@@ -192,71 +199,71 @@ export default function StatsScreen() {
 
   return (
       <ScrollView
-        style={styles.container}
+        style={dynamicStyles.container}
         contentContainerStyle={{ flexGrow: 1 }}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={themeColors.tint} />}
       >
-      <View style={styles.header}>
-        <Server size={32} color="#3B82F6" />
-        <Text style={styles.title}>Statistics</Text>
+      <View style={dynamicStyles.header}>
+        <Server size={32} color={themeColors.tint} />
+        <Text style={dynamicStyles.title}>Statistics</Text>
       </View>
 
       {loading && !refreshing ? (
         <>
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#3B82F6" />
+          <View style={dynamicStyles.loadingContainer}>
+            <ActivityIndicator size="large" color={themeColors.tint} />
           </View>
-          <TouchableOpacity style={styles.settingsButton} onPress={handleEditConfiguration}>
-            <Settings size={24} color="#6B7280" />
+          <TouchableOpacity style={dynamicStyles.settingsButton} onPress={handleEditConfiguration}>
+            <Settings size={24} color={themeColors.tabIconDefault} />
           </TouchableOpacity>
         </>
       ) : (
         <>
           {/* System Info Cards */}
-          <View style={styles.cardsContainer}>
-            <View style={styles.card}>
-              <Cpu size={24} color="#EF4444" />
-              <Text style={styles.cardTitle}>CPU Usage</Text>
-              <Text style={styles.cardValue}>{getCpuUsagePercent()}%</Text>
+          <View style={dynamicStyles.cardsContainer}>
+            <View style={dynamicStyles.card}>
+              <Cpu size={24} color={Colors.light.tint} />
+              <Text style={dynamicStyles.cardTitle}>CPU Usage</Text>
+              <Text style={dynamicStyles.cardValue}>{getCpuUsagePercent()}%</Text>
             </View>
             
-            <View style={styles.card}>
-              <HardDrive size={24} color="#3B82F6" />
-              <Text style={styles.cardTitle}>Memory</Text>
-              <Text style={styles.cardValue}>{getMemoryUsagePercent()}%</Text>
+            <View style={dynamicStyles.card}>
+              <HardDrive size={24} color={Colors.light.tint} />
+              <Text style={dynamicStyles.cardTitle}>Memory</Text>
+              <Text style={dynamicStyles.cardValue}>{getMemoryUsagePercent()}%</Text>
             </View>
           </View>
 
           {/* System Details */}
           {systemData && (
-            <View style={styles.detailsCard}>
-              <Text style={styles.sectionTitle}>System Information</Text>
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>OS:</Text>
-                <Text style={styles.detailValue}>{systemData.system}</Text>
+            <View style={dynamicStyles.detailsCard}>
+              <Text style={dynamicStyles.sectionTitle}>System Information</Text>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>OS:</Text>
+                <Text style={dynamicStyles.detailValue}>{systemData.system}</Text>
               </View>
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>CPU:</Text>
-                <Text style={styles.detailValue}>{systemData.cpuType}</Text>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>CPU:</Text>
+                <Text style={dynamicStyles.detailValue}>{systemData.cpuType}</Text>
               </View>
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>CPU Cores:</Text>
-                <Text style={styles.detailValue}>{systemData.cpuNum}</Text>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>CPU Cores:</Text>
+                <Text style={dynamicStyles.detailValue}>{systemData.cpuNum}</Text>
               </View>
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Total Memory:</Text>
-                <Text style={styles.detailValue}>{formatBytes(systemData.memTotal * 1024)}</Text>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Total Memory:</Text>
+                <Text style={dynamicStyles.detailValue}>{formatBytes(systemData.memTotal * 1024)}</Text>
               </View>
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Used Memory:</Text>
-                <Text style={styles.detailValue}>{formatBytes(systemData.memRealUsed * 1024)}</Text>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Used Memory:</Text>
+                <Text style={dynamicStyles.detailValue}>{formatBytes(systemData.memRealUsed * 1024)}</Text>
               </View>
             </View>
           )}
 
           {/* Usage Charts */}
-          <View style={styles.chartCard}>
-            <Text style={styles.sectionTitle}>Resource Usage</Text>
+          <View style={dynamicStyles.chartCard}>
+            <Text style={dynamicStyles.sectionTitle}>Resource Usage</Text>
             <BarChart
               data={getBarChartData()}
               width={screenWidth - 48}
@@ -264,36 +271,36 @@ export default function StatsScreen() {
               yAxisLabel=""
               yAxisSuffix="%"
               chartConfig={{
-                backgroundColor: '#ffffff',
-                backgroundGradientFrom: '#ffffff',
-                backgroundGradientTo: '#ffffff',
+                backgroundColor: themeColors.tabBarBackground,
+                backgroundGradientFrom: themeColors.tabBarBackground,
+                backgroundGradientTo: themeColors.tabBarBackground,
                 decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(59, 130, 246, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                color: (opacity = 1) => `rgba(${parseInt(themeColors.tint.slice(1, 3), 16)}, ${parseInt(themeColors.tint.slice(3, 5), 16)}, ${parseInt(themeColors.tint.slice(5, 7), 16)}, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(${parseInt(themeColors.text.slice(1, 3), 16)}, ${parseInt(themeColors.text.slice(3, 5), 16)}, ${parseInt(themeColors.text.slice(5, 7), 16)}, ${opacity})`,
                 style: {
                   borderRadius: 16,
                 },
                 propsForDots: {
                   r: '6',
                   strokeWidth: '2',
-                  stroke: '#ffa726',
+                  stroke: themeColors.tint,
                 },
               }}
-              style={styles.chart}
+              style={dynamicStyles.chart}
               withCustomBarColorFromData
             />
           </View>
 
           {/* Disk Usage */}
           {diskData.length > 0 && (
-            <View style={styles.chartCard}>
-              <Text style={styles.sectionTitle}>Disk Usage</Text>
+            <View style={dynamicStyles.chartCard}>
+              <Text style={dynamicStyles.sectionTitle}>Disk Usage</Text>
               <PieChart
                 data={getDiskUsageData()}
                 width={screenWidth - 48}
                 height={220}
                 chartConfig={{
-                  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                  color: (opacity = 1) => `rgba(${parseInt(themeColors.text.slice(1, 3), 16)}, ${parseInt(themeColors.text.slice(3, 5), 16)}, ${parseInt(themeColors.text.slice(5, 7), 16)}, ${opacity})`,
                 }}
                 accessor="population"
                 backgroundColor="transparent"
@@ -305,21 +312,21 @@ export default function StatsScreen() {
 
           {/* Network Info */}
           {networkData && (
-            <View style={styles.detailsCard}>
-              <Text style={styles.sectionTitle}>Network & Load</Text>
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Load Average:</Text>
-                <Text style={styles.detailValue}>
+            <View style={dynamicStyles.detailsCard}>
+              <Text style={dynamicStyles.sectionTitle}>Network & Load</Text>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Load Average:</Text>
+                <Text style={dynamicStyles.detailValue}>
                   {networkData.load.one.toFixed(2)} / {networkData.load.five.toFixed(2)} / {networkData.load.fifteen.toFixed(2)}
                 </Text>
               </View>
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Network Up:</Text>
-                <Text style={styles.detailValue}>{formatBytes(networkData.network.upTotal)}</Text>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Network Up:</Text>
+                <Text style={dynamicStyles.detailValue}>{formatBytes(networkData.network.upTotal)}</Text>
               </View>
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Network Down:</Text>
-                <Text style={styles.detailValue}>{formatBytes(networkData.network.downTotal)}</Text>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Network Down:</Text>
+                <Text style={dynamicStyles.detailValue}>{formatBytes(networkData.network.downTotal)}</Text>
               </View>
             </View>
           )}
@@ -329,10 +336,10 @@ export default function StatsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getDynamicStyles = (themeColors: typeof Colors.light) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: themeColors.background,
   },
   header: {
     flexDirection: 'row',
@@ -349,13 +356,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: themeColors.text,
     marginLeft: 12,
   },
   settingsButton: {
     padding: 8,
     borderRadius: 8,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: themeColors.tabBarBorder,
   },
   loadingContainer: {
     flex: 1,
@@ -371,11 +378,11 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: themeColors.tabBarBackground,
     padding: 20,
     borderRadius: 16,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: themeColors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -383,34 +390,34 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 14,
-    color: '#6B7280',
+    color: themeColors.tabIconDefault,
     marginTop: 8,
     marginBottom: 4,
   },
   cardValue: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: themeColors.text,
   },
   detailsCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: themeColors.tabBarBackground,
     margin: 24,
     marginTop: 0,
     padding: 20,
     borderRadius: 16,
-    shadowColor: '#000',
+    shadowColor: themeColors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
   chartCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: themeColors.tabBarBackground,
     margin: 24,
     marginTop: 0,
     padding: 20,
     borderRadius: 16,
-    shadowColor: '#000',
+    shadowColor: themeColors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -420,7 +427,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: themeColors.text,
     marginBottom: 16,
   },
   detailRow: {
@@ -429,17 +436,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: themeColors.tabBarBorder,
   },
   detailLabel: {
     fontSize: 14,
-    color: '#6B7280',
+    color: themeColors.tabIconDefault,
     flex: 1,
   },
   detailValue: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1F2937',
+    color: themeColors.text,
     flex: 1,
     textAlign: 'right',
   },

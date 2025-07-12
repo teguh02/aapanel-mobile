@@ -8,11 +8,13 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  useColorScheme,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AaPanelApi, Site } from '@/services/AaPanelApi';
 import SetupScreen from '@/components/SetupScreen';
 import { Globe, Play, Square, Calendar, Folder, Settings, StopCircle } from 'lucide-react-native';
+import Colors from '@/constants/Colors';
 
 export default function SitesScreen() {
   const [isConfigured, setIsConfigured] = useState<boolean | null>(null);
@@ -21,6 +23,11 @@ export default function SitesScreen() {
   const [sites, setSites] = useState<Site[]>([]);
   const [api, setApi] = useState<AaPanelApi | null>(null);
   const [actionLoading, setActionLoading] = useState<{ [key: number]: boolean }>({});
+
+  const colorScheme = useColorScheme();
+  const themeColors = colorScheme === 'dark' ? Colors.dark : Colors.light;
+
+  const dynamicStyles = getDynamicStyles(themeColors);
 
   useEffect(() => {
     checkConfiguration();
@@ -199,8 +206,8 @@ export default function SitesScreen() {
 
   if (isConfigured === null) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#3B82F6" />
+      <View style={dynamicStyles.loadingContainer}>
+        <ActivityIndicator size="large" color={themeColors.tint} />
       </View>
     );
   }
@@ -210,48 +217,48 @@ export default function SitesScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Globe size={32} color="#3B82F6" />
-          <Text style={styles.title}>Website</Text>
+    <View style={dynamicStyles.container}>
+      <View style={dynamicStyles.header}>
+        <View style={dynamicStyles.headerLeft}>
+          <Globe size={32} color={themeColors.tint} />
+          <Text style={dynamicStyles.title}>Website</Text>
         </View>
-        <TouchableOpacity style={styles.settingsButton} onPress={handleEditConfiguration}>
-          <Settings size={24} color="#6B7280" />
+        <TouchableOpacity style={dynamicStyles.settingsButton} onPress={handleEditConfiguration}>
+          <Settings size={24} color={themeColors.tabIconDefault} />
         </TouchableOpacity>
       </View>
 
       {loading && !refreshing ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#3B82F6" />
+        <View style={dynamicStyles.loadingContainer}>
+          <ActivityIndicator size="large" color={themeColors.tint} />
         </View>
       ) : (
         <ScrollView
-          style={styles.scrollView}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          style={dynamicStyles.scrollView}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={themeColors.tint} />}
         >
           {sites.length === 0 ? (
-            <View style={styles.emptyContainer}>
-              <Globe size={64} color="#D1D5DB" />
-              <Text style={styles.emptyText}>No websites found</Text>
-              <Text style={styles.emptySubtext}>Pull down to refresh</Text>
+            <View style={dynamicStyles.emptyContainer}>
+              <Globe size={64} color={themeColors.tabIconDefault} />
+              <Text style={dynamicStyles.emptyText}>No websites found</Text>
+              <Text style={dynamicStyles.emptySubtext}>Pull down to refresh</Text>
             </View>
           ) : (
             sites.map((site) => (
-              <View key={site.id} style={styles.siteCard}>
-                <View style={styles.siteHeader}>
-                  <View style={styles.siteInfo}>
-                    <Text style={styles.siteName}>{site.name}</Text>
-                    <View style={styles.statusContainer}>
+              <View key={site.id} style={dynamicStyles.siteCard}>
+                <View style={dynamicStyles.siteHeader}>
+                  <View style={dynamicStyles.siteInfo}>
+                    <Text style={dynamicStyles.siteName}>{site.name}</Text>
+                    <View style={dynamicStyles.statusContainer}>
                       <View
                         style={[
-                          styles.statusDot,
+                          dynamicStyles.statusDot,
                           { backgroundColor: getSiteStatusColor(site.status) },
                         ]}
                       />
                       <Text
                         style={[
-                          styles.statusText,
+                          dynamicStyles.statusText,
                           { color: getSiteStatusColor(site.status) },
                         ]}
                       >
@@ -261,26 +268,26 @@ export default function SitesScreen() {
                   </View>
                 </View>
 
-                <View style={styles.siteDetails}>
-                  <View style={styles.detailRow}>
-                    <Folder size={16} color="#6B7280" />
-                    <Text style={styles.detailText}>{site.path}</Text>
+                <View style={dynamicStyles.siteDetails}>
+                  <View style={dynamicStyles.detailRow}>
+                    <Folder size={16} color={themeColors.tabIconDefault} />
+                    <Text style={dynamicStyles.detailText}>{site.path}</Text>
                   </View>
-                  <View style={styles.detailRow}>
-                    <Calendar size={16} color="#6B7280" />
-                    <Text style={styles.detailText}>Created: {formatDate(site.addtime)}</Text>
+                  <View style={dynamicStyles.detailRow}>
+                    <Calendar size={16} color={themeColors.tabIconDefault} />
+                    <Text style={dynamicStyles.detailText}>Created: {formatDate(site.addtime)}</Text>
                   </View>
                   {site.ps && (
-                    <View style={styles.detailRow}>
-                      <Text style={styles.detailText}>Note: {site.ps}</Text>
+                    <View style={dynamicStyles.detailRow}>
+                      <Text style={dynamicStyles.detailText}>Note: {site.ps}</Text>
                     </View>
                   )}
                 </View>
 
-                <View style={styles.actionButtons}>
+                <View style={dynamicStyles.actionButtons}>
                   {site.status === '1' ? (
                     <TouchableOpacity
-                      style={[styles.actionButton, styles.stopButton]}
+                      style={[dynamicStyles.actionButton, dynamicStyles.stopButton]}
                       onPress={() => confirmSiteAction(site, 'stop')}
                       disabled={actionLoading[site.id]}
                     >
@@ -289,13 +296,13 @@ export default function SitesScreen() {
                       ) : (
                         <>
                           <StopCircle size={16} color="#FFFFFF" />
-                          <Text style={styles.actionButtonText}>Stop</Text>
+                          <Text style={dynamicStyles.actionButtonText}>Stop</Text>
                         </>
                       )}
                     </TouchableOpacity>
                   ) : (
                     <TouchableOpacity
-                      style={[styles.actionButton, styles.startButton]}
+                      style={[dynamicStyles.actionButton, dynamicStyles.startButton]}
                       onPress={() => confirmSiteAction(site, 'start')}
                       disabled={actionLoading[site.id]}
                     >
@@ -304,7 +311,7 @@ export default function SitesScreen() {
                       ) : (
                         <>
                           <Play size={16} color="#FFFFFF" />
-                          <Text style={styles.actionButtonText}>Start</Text>
+                          <Text style={dynamicStyles.actionButtonText}>Start</Text>
                         </>
                       )}
                     </TouchableOpacity>
@@ -319,10 +326,10 @@ export default function SitesScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const getDynamicStyles = (themeColors: typeof Colors.light) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+    backgroundColor: themeColors.background,
   },
   header: {
     flexDirection: 'row',
@@ -339,13 +346,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: themeColors.text,
     marginLeft: 12,
   },
   settingsButton: {
     padding: 8,
     borderRadius: 8,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: themeColors.tabBarBorder,
   },
   loadingContainer: {
     flex: 1,
@@ -366,20 +373,20 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#6B7280',
+    color: themeColors.tabIconDefault,
     marginTop: 16,
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#9CA3AF',
+    color: themeColors.tabIconDefault,
     marginTop: 8,
   },
   siteCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: themeColors.tabBarBackground,
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
+    shadowColor: themeColors.text,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -396,7 +403,7 @@ const styles = StyleSheet.create({
   siteName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: themeColors.text,
     flex: 1,
     marginRight: 12,
   },
@@ -424,7 +431,7 @@ const styles = StyleSheet.create({
   },
   detailText: {
     fontSize: 14,
-    color: '#6B7280',
+    color: themeColors.tabIconDefault,
     marginLeft: 8,
     flex: 1,
   },
