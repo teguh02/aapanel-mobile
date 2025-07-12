@@ -12,7 +12,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AaPanelApi, Site } from '@/services/AaPanelApi';
 import SetupScreen from '@/components/SetupScreen';
-import { Globe, Play, Square, Calendar, Folder, Settings } from 'lucide-react-native';
+import { Globe, Play, Square, Calendar, Folder, Settings, StopCircle } from 'lucide-react-native';
 
 export default function SitesScreen() {
   const [isConfigured, setIsConfigured] = useState<boolean | null>(null);
@@ -288,7 +288,7 @@ export default function SitesScreen() {
                         <ActivityIndicator size="small" color="#FFFFFF" />
                       ) : (
                         <>
-                          <Square size={16} color="#FFFFFF" />
+                          <StopCircle size={16} color="#FFFFFF" />
                           <Text style={styles.actionButtonText}>Stop</Text>
                         </>
                       )}

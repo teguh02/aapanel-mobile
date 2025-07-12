@@ -10,6 +10,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BarChart, PieChart } from 'react-native-chart-kit';
 import { AaPanelApi, SystemTotal, DiskInfo, NetworkInfo } from '@/services/AaPanelApi';
@@ -165,7 +166,7 @@ export default function StatsScreen() {
   const getDiskUsageData = () => {
     return diskData.map((disk, index) => ({
       name: disk.path,
-      population: parseInt(disk.percent.replace('%', '')),
+      population: parseInt((disk.percent || '0').replace('%', '')),
       color: `hsl(${index * 60}, 70%, 50%)`,
       legendFontColor: '#7F7F7F',
       legendFontSize: 12,
@@ -188,22 +189,25 @@ export default function StatsScreen() {
   };
 
   return (
-    <ScrollView
-      style={styles.container}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-    >
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView
+        style={styles.container}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
       <View style={styles.header}>
         <Server size={32} color="#3B82F6" />
         <Text style={styles.title}>System Statistics</Text>
       </View>
 
       {loading && !refreshing ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#3B82F6" />
-        </View>
-        <TouchableOpacity style={styles.settingsButton} onPress={handleEditConfiguration}>
-          <Settings size={24} color="#6B7280" />
-        </TouchableOpacity>
+        <>
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#3B82F6" />
+          </View>
+          <TouchableOpacity style={styles.settingsButton} onPress={handleEditConfiguration}>
+            <Settings size={24} color="#6B7280" />
+          </TouchableOpacity>
+        </>
       ) : (
         <>
           {/* System Info Cards */}
@@ -320,6 +324,7 @@ export default function StatsScreen() {
         </>
       )}
     </ScrollView>
+    </SafeAreaView>
   );
 }
 

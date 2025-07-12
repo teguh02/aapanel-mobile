@@ -9,7 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Info, Mail, User, TriangleAlert as AlertTriangle, Heart, Code, Settings } from 'lucide-react-native';
+import { Info, Mail, User, TriangleAlert as AlertTriangle, Heart, Code, Settings, Github } from 'lucide-react-native';
 
 export default function AboutScreen() {
   const handleEmailPress = () => {
@@ -92,6 +92,10 @@ export default function AboutScreen() {
           <TouchableOpacity style={styles.emailButton} onPress={handleEmailPress}>
             <Mail size={16} color="#3B82F6" />
             <Text style={styles.emailText}>teguhrijanandi02@gmail.com</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.githubButton} onPress={() => Linking.openURL('https://github.com/teguh02/aapanel-mobile')}>
+            <Github size={16} color="#1F2937" />
+            <Text style={styles.githubText}>teguh02/aapanel-mobile</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -285,6 +289,21 @@ const styles = StyleSheet.create({
   emailText: {
     fontSize: 16,
     color: '#3B82F6',
+    marginLeft: 8,
+    fontWeight: '600',
+  },
+  githubButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#E5E7EB',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+    marginTop: 10,
+  },
+  githubText: {
+    fontSize: 16,
+    color: '#1F2937',
     marginLeft: 8,
     fontWeight: '600',
   },
