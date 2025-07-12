@@ -5,6 +5,7 @@ import CryptoJS from 'crypto-js';
 export interface SystemTotal {
   cpuNum: number;
   cpuRealUsed: number;
+  cpuType: string;
   isport: boolean;
   isuser: number;
   memBuffers: number;
@@ -64,11 +65,6 @@ export interface NetworkInfo {
     memRealUsed: number;
     memTotal: number;
   };
-  network: { [key: string]: any }; // Define a more specific interface if needed
-  site_total: number;
-  system: string;
-  time: string;
-  title: string;
   up: number;
   upPackets: number;
   upTotal: number;
@@ -78,6 +74,10 @@ export interface NetworkInfo {
     status: boolean;
   };
   version: string;
+  site_total: number;
+  system: string;
+  time: string;
+  title: string;
 }
 
 export interface Site {

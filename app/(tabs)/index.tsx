@@ -252,7 +252,7 @@ export default function StatsScreen() {
           </View>
 
           {/* System Details */}
-          {systemData && (
+          {systemData && networkData && (
             <View style={dynamicStyles.detailsCard}>
               <Text style={dynamicStyles.sectionTitle}>System Information</Text>
               <View style={dynamicStyles.detailRow}>
@@ -266,6 +266,14 @@ export default function StatsScreen() {
               <View style={dynamicStyles.detailRow}>
                 <Text style={dynamicStyles.detailLabel}>CPU Cores:</Text>
                 <Text style={dynamicStyles.detailValue}>{systemData.cpuNum}</Text>
+              </View>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>CPU Type:</Text>
+                <Text style={dynamicStyles.detailValue}>{networkData.cpu[3]}</Text>
+              </View>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>CPU Real Used:</Text>
+                <Text style={dynamicStyles.detailValue}>{systemData.cpuRealUsed.toFixed(2)}%</Text>
               </View>
               <View style={dynamicStyles.detailRow}>
                 <Text style={dynamicStyles.detailLabel}>Total Memory:</Text>
@@ -290,6 +298,14 @@ export default function StatsScreen() {
               <View style={dynamicStyles.detailRow}>
                 <Text style={dynamicStyles.detailLabel}>Uptime:</Text>
                 <Text style={dynamicStyles.detailValue}>{systemData.time}</Text>
+              </View>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Is Port:</Text>
+                <Text style={dynamicStyles.detailValue}>{systemData.isport ? 'Yes' : 'No'}</Text>
+              </View>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Is User:</Text>
+                <Text style={dynamicStyles.detailValue}>{systemData.isuser}</Text>
               </View>
             </View>
           )}
@@ -381,6 +397,18 @@ export default function StatsScreen() {
               <View style={dynamicStyles.detailRow}>
                 <Text style={dynamicStyles.detailLabel}>Total Databases:</Text>
                 <Text style={dynamicStyles.detailValue}>{networkData.database_total}</Text>
+              </View>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Installed:</Text>
+                <Text style={dynamicStyles.detailValue}>{networkData.installed ? 'Yes' : 'No'}</Text>
+              </View>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Title:</Text>
+                <Text style={dynamicStyles.detailValue}>{networkData.title}</Text>
+              </View>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>User:</Text>
+                <Text style={dynamicStyles.detailValue}>{networkData.user_info.data.username}</Text>
               </View>
             </View>
           )}
