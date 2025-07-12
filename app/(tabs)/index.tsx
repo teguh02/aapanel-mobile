@@ -10,7 +10,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BarChart, PieChart } from 'react-native-chart-kit';
 import { AaPanelApi, SystemTotal, DiskInfo, NetworkInfo } from '@/services/AaPanelApi';
@@ -20,6 +20,7 @@ import { Cpu, HardDrive, Wifi, Server, Settings } from 'lucide-react-native';
 const screenWidth = Dimensions.get('window').width;
 
 export default function StatsScreen() {
+  const insets = useSafeAreaInsets();
   const [isConfigured, setIsConfigured] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -145,7 +146,8 @@ export default function StatsScreen() {
     return <SetupScreen onSetupComplete={handleSetupComplete} />;
   }
 
-  const formatBytes = (bytes: number) => {
+  const formatBytes = (bytes: number | undefined | null) => {
+    if (bytes === undefined || bytes === null || isNaN(bytes)) return '(no data)';
     if (bytes === 0) return '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
@@ -192,6 +194,7 @@ export default function StatsScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
         style={styles.container}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
       <View style={styles.header}>
