@@ -298,7 +298,7 @@ export default function SitesScreen() {
                     >
                       <View>
                           <StopCircle size={16} color="#FFFFFF" />
-                          <Text style={dynamicStyles.actionButtonText}>Stop</Text>
+                          
                         </View>
                     </TouchableOpacity>
                   ) : (
@@ -312,7 +312,7 @@ export default function SitesScreen() {
                       ) : (
                         <View>
                           <Play size={16} color="#FFFFFF" />
-                          <Text style={dynamicStyles.actionButtonText}>Start</Text>
+                          
                         </View>
                       )}
                     </TouchableOpacity>
@@ -322,7 +322,7 @@ export default function SitesScreen() {
                     onPress={() => toggleDetails(site.id)}
                   >
                     <Info size={16} color="#FFFFFF" />
-                    <Text style={dynamicStyles.actionButtonText}>Detail</Text>
+                    
                   </TouchableOpacity>
                 </View>
 
@@ -537,11 +537,12 @@ const getDynamicStyles = (themeColors: typeof Colors.light) => StyleSheet.create
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    padding: 0,
     borderRadius: 8,
-    minWidth: 80,
+    width: 40,
+    height: 40,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   startButton: {
     backgroundColor: '#10B981',
@@ -549,12 +550,7 @@ const getDynamicStyles = (themeColors: typeof Colors.light) => StyleSheet.create
   stopButton: {
     backgroundColor: '#EF4444',
   },
-  actionButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-    marginLeft: 6,
-  },
+  
   detailButton: {
     backgroundColor: '#007AFF', // A nice blue color
     marginLeft: 8,
