@@ -13,7 +13,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AaPanelApi, Site } from '@/services/AaPanelApi';
 import SetupScreen from '@/components/SetupScreen';
-import { Globe, Play, Square, Calendar, Folder, Settings, StopCircle } from 'lucide-react-native';
+import { Globe, Play, Square, Calendar, Folder, Settings, StopCircle, Info } from 'lucide-react-native';
 import Colors from '@/constants/Colors';
 
 export default function SitesScreen() {
@@ -23,6 +23,7 @@ export default function SitesScreen() {
   const [sites, setSites] = useState<Site[]>([]);
   const [api, setApi] = useState<AaPanelApi | null>(null);
   const [actionLoading, setActionLoading] = useState<{ [key: number]: boolean }>({});
+  const [expandedSiteId, setExpandedSiteId] = useState<number | null>(null);
 
   const colorScheme = useColorScheme();
   const themeColors = colorScheme === 'dark' ? Colors.dark : Colors.light;
@@ -204,6 +205,10 @@ export default function SitesScreen() {
     return status === '1' ? 'Active' : 'Inactive';
   };
 
+  const toggleDetails = (siteId: number) => {
+    setExpandedSiteId(prevId => (prevId === siteId ? null : siteId));
+  };
+
   if (isConfigured === null) {
     return (
       <View style={dynamicStyles.loadingContainer}>
@@ -291,14 +296,11 @@ export default function SitesScreen() {
                       onPress={() => confirmSiteAction(site, 'stop')}
                       disabled={actionLoading[site.id]}
                     >
-                      {actionLoading[site.id] ? (
-                        <ActivityIndicator size="small" color="#FFFFFF" />
-                      ) : (
-                        <>
+                      <>
                           <StopCircle size={16} color="#FFFFFF" />
                           <Text style={dynamicStyles.actionButtonText}>Stop</Text>
                         </>
-                      )}
+                      }
                     </TouchableOpacity>
                   ) : (
                     <TouchableOpacity
@@ -316,7 +318,37 @@ export default function SitesScreen() {
                       )}
                     </TouchableOpacity>
                   )}
+                  <TouchableOpacity
+                    style={[dynamicStyles.actionButton, dynamicStyles.detailButton]}
+                    onPress={() => toggleDetails(site.id)}
+                  >
+                    <Info size={16} color="#FFFFFF" />
+                    <Text style={dynamicStyles.actionButtonText}>Detail</Text>
+                  </TouchableOpacity>
                 </View>
+
+                {expandedSiteId === site.id && (
+                  <View style={dynamicStyles.expandedDetails}>
+                    <View style={dynamicStyles.detailRow}>
+                      <Text style={dynamicStyles.detailLabel}>PHP Version:</Text>
+                      <Text style={dynamicStyles.detailValue}>{site.php_version}</Text>
+                    </View>
+                    <View style={dynamicStyles.detailRow}>
+                      <Text style={dynamicStyles.detailLabel}>Project Type:</Text>
+                      <Text style={dynamicStyles.detailValue}>{site.project_type}</Text>
+                    </View>
+                    <View style={dynamicStyles.detailRow}>
+                      <Text style={dynamicStyles.detailLabel}>Backup Count:</Text>
+                      <Text style={dynamicStyles.detailValue}>{site.backup_count}</Text>
+                    </View>
+                    {site.ssl && site.ssl.notAfter && (
+                      <View style={dynamicStyles.detailRow}>
+                        <Text style={dynamicStyles.detailLabel}>SSL Expire:</Text>
+                        <Text style={dynamicStyles.detailValue}>{site.ssl.notAfter}</Text>
+                      </View>
+                    )}
+                  </View>
+                )}
               </View>
             ))
           )}
@@ -459,5 +491,26 @@ const getDynamicStyles = (themeColors: typeof Colors.light) => StyleSheet.create
     fontSize: 14,
     fontWeight: '600',
     marginLeft: 6,
+  },
+  detailButton: {
+    backgroundColor: '#007AFF', // A nice blue color
+    marginLeft: 8,
+  },
+  expandedDetails: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: themeColors.tabBarBorder,
+  },
+  detailLabel: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: themeColors.text,
+    width: 100, // Fixed width for labels
+  },
+  detailValue: {
+    fontSize: 14,
+    color: themeColors.tabIconDefault,
+    flex: 1,
   },
 });
