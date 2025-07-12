@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 24,
-    paddingTop: 60,
+    paddingTop: 24,
   },
   headerLeft: {
     flexDirection: 'row',

@@ -191,10 +191,9 @@ export default function StatsScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
         style={styles.container}
-        contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom }}
+        contentContainerStyle={{ flexGrow: 1 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
       <View style={styles.header}>
@@ -327,7 +326,6 @@ export default function StatsScreen() {
         </>
       )}
     </ScrollView>
-    </SafeAreaView>
   );
 }
 
@@ -341,7 +339,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 24,
-    paddingTop: 60,
+    paddingTop: 24,
   },
   headerLeft: {
     flexDirection: 'row',

@@ -9,7 +9,8 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Info, Mail, User, TriangleAlert as AlertTriangle, Heart, Code, Settings, Github } from 'lucide-react-native';
+import { Info, Mail, User, TriangleAlert as AlertTriangle, Heart, Code, Settings, Github, Share2 } from 'lucide-react-native';
+import { Share } from 'react-native';
 
 export default function AboutScreen() {
   const handleEmailPress = () => {
@@ -54,6 +55,27 @@ export default function AboutScreen() {
       ]
     );
   };
+  const handleSharePress = async () => {
+    try {
+      const result = await Share.share({
+        message:
+          'Check out AaPanel Mobile, an unofficial mobile interface for aaPanel server management! Get it here: https://github.com/teguh02/aapanel-mobile',
+        url: 'https://github.com/teguh02/aapanel-mobile',
+        title: 'Share AaPanel Mobile',
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error: any) {
+      Alert.alert('Error', error.message);
+    }
+  };
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -63,6 +85,9 @@ export default function AboutScreen() {
         </View>
         <TouchableOpacity style={styles.settingsButton} onPress={handleEditConfiguration}>
           <Settings size={24} color="#6B7280" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.settingsButton} onPress={handleSharePress}>
+          <Share2 size={24} color="#6B7280" />
         </TouchableOpacity>
       </View>
 
@@ -154,28 +179,7 @@ export default function AboutScreen() {
         </View>
       </View>
 
-      {/* Technical Info */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Technical Information</Text>
-        <View style={styles.techInfo}>
-          <View style={styles.techRow}>
-            <Text style={styles.techLabel}>Framework:</Text>
-            <Text style={styles.techValue}>React Native (Expo)</Text>
-          </View>
-          <View style={styles.techRow}>
-            <Text style={styles.techLabel}>API:</Text>
-            <Text style={styles.techValue}>aaPanel Official API</Text>
-          </View>
-          <View style={styles.techRow}>
-            <Text style={styles.techLabel}>Authentication:</Text>
-            <Text style={styles.techValue}>MD5 Token Signature</Text>
-          </View>
-          <View style={styles.techRow}>
-            <Text style={styles.techLabel}>Charts:</Text>
-            <Text style={styles.techValue}>React Native Chart Kit</Text>
-          </View>
-        </View>
-      </View>
+      
 
       {/* Footer */}
       <View style={styles.footer}>
@@ -200,7 +204,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 24,
-    paddingTop: 60,
+    paddingTop: 24,
+    gap: 10,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -333,27 +338,7 @@ const styles = StyleSheet.create({
     color: '#4B5563',
     flex: 1,
   },
-  techInfo: {
-    marginTop: 16,
-  },
-  techRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
-  },
-  techLabel: {
-    fontSize: 14,
-    color: '#6B7280',
-    fontWeight: '600',
-  },
-  techValue: {
-    fontSize: 14,
-    color: '#1F2937',
-    fontWeight: '500',
-  },
+  
   footer: {
     alignItems: 'center',
     padding: 24,
