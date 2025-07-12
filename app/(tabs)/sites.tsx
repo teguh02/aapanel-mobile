@@ -148,17 +148,17 @@ export default function SitesScreen() {
     } catch (error) {
       console.error(`Error ${action}ing site:`, error);
       
-      let errorMessage = `Failed to ${action} site.`;
+      let errorMessage = `Failed to ${action} site.`
       
       if (error instanceof Error) {
         if (error.message.includes('CORS')) {
-          errorMessage = `CORS Error: Cannot ${action} site due to panel security settings.\n\nPlease contact your server administrator.`;
+          errorMessage = `CORS Error: Cannot ${action} site due to panel security settings.\n\nPlease contact your server administrator.`
         } else if (error.message.includes('Network Error') || error.message.includes('NETWORK_ERROR')) {
-          errorMessage = `Network Error: Cannot connect to panel to ${action} site.\n\nPlease check your connection.`;
+          errorMessage = `Network Error: Cannot connect to panel to ${action} site.\n\nPlease check your connection.`
         } else if (error.message.includes('timeout')) {
-          errorMessage = `Timeout Error: Panel is taking too long to ${action} the site.\n\nPlease try again.`;
+          errorMessage = `Timeout Error: Panel is taking too long to ${action} the site.\n\nPlease try again.`
         } else if (error.message.includes('Unauthorized') || error.message.includes('401')) {
-          errorMessage = `Authentication Error: No permission to ${action} sites.\n\nPlease check your API key permissions.`;
+          errorMessage = `Authentication Error: No permission to ${action} sites.\n\nPlease check your API key permissions.`
         } else {
           errorMessage = `${action.charAt(0).toUpperCase() + action.slice(1)} Error: ${error.message}`;
         }
@@ -296,10 +296,10 @@ export default function SitesScreen() {
                       onPress={() => confirmSiteAction(site, 'stop')}
                       disabled={actionLoading[site.id]}
                     >
-                      <>
+                      <View>
                           <StopCircle size={16} color="#FFFFFF" />
                           <Text style={dynamicStyles.actionButtonText}>Stop</Text>
-                        </>
+                        </View>
                     </TouchableOpacity>
                   ) : (
                     <TouchableOpacity
@@ -310,10 +310,10 @@ export default function SitesScreen() {
                       {actionLoading[site.id] ? (
                         <ActivityIndicator size="small" color="#FFFFFF" />
                       ) : (
-                        <>
+                        <View>
                           <Play size={16} color="#FFFFFF" />
                           <Text style={dynamicStyles.actionButtonText}>Start</Text>
-                        </>
+                        </View>
                       )}
                     </TouchableOpacity>
                   )}
@@ -359,7 +359,7 @@ export default function SitesScreen() {
                       <Text style={dynamicStyles.detailValue}>{site.ps}</Text>
                     </View>
                     {site.quota && (
-                      <>
+                      <View>
                         <View style={dynamicStyles.detailRow}>
                           <Text style={dynamicStyles.detailLabel}>Quota Free:</Text>
                           <Text style={dynamicStyles.detailValue}>{site.quota.free}</Text>
@@ -372,7 +372,7 @@ export default function SitesScreen() {
                           <Text style={dynamicStyles.detailLabel}>Quota Used:</Text>
                           <Text style={dynamicStyles.detailValue}>{site.quota.used}</Text>
                         </View>
-                      </>
+                      </View>
                     )}
                     <View style={dynamicStyles.detailRow}>
                       <Text style={dynamicStyles.detailLabel}>Rname:</Text>
@@ -383,7 +383,7 @@ export default function SitesScreen() {
                       <Text style={dynamicStyles.detailValue}>{site.site_ssl}</Text>
                     </View>
                     {site.ssl && (
-                      <>
+                      <View>
                         <View style={dynamicStyles.detailRow}>
                           <Text style={dynamicStyles.detailLabel}>SSL DNS:</Text>
                           <Text style={dynamicStyles.detailValue}>{site.ssl.dns ? site.ssl.dns.join(', ') : 'N/A'}</Text>
@@ -404,7 +404,7 @@ export default function SitesScreen() {
                           <Text style={dynamicStyles.detailLabel}>SSL Subject:</Text>
                           <Text style={dynamicStyles.detailValue}>{site.ssl.subject}</Text>
                         </View>
-                      </>
+                      </View>
                     )}
                     <View style={dynamicStyles.detailRow}>
                       <Text style={dynamicStyles.detailLabel}>Attack:</Text>
@@ -577,3 +577,4 @@ const getDynamicStyles = (themeColors: typeof Colors.light) => StyleSheet.create
     flex: 1,
   },
 });
+// Added a comment to trigger re-bundling
