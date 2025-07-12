@@ -3,53 +3,81 @@ import qs from 'qs';
 import CryptoJS from 'crypto-js';
 
 export interface SystemTotal {
-  system: string;
-  version: string;
-  memTotal: number;
-  memFree: number;
+  cpuNum: number;
+  cpuRealUsed: number;
+  isport: boolean;
+  isuser: number;
   memBuffers: number;
   memCached: number;
+  memFree: number;
   memRealUsed: number;
-  cpuNum: number;
-  cpuType: string;
-  load: {
-    one: number;
-    five: number;
-    fifteen: number;
-  };
+  memTotal: number;
+  system: string;
+  time: string;
+  version: string;
 }
 
 export interface DiskInfo {
   filesystem: string;
-  type: string;
+  inodes: (string | number)[];
   path: string;
-  size: string;
-  used: string;
-  avail: string;
-  percent: string;
-  inodes: string;
+  size: (string | number)[];
+  type: string;
 }
 
 export interface NetworkInfo {
-  cpu: number[];
+  cpu: (number | string | number[])[];
+  cpu_times: {
+    active_processes: number;
+    guest: number;
+    guest_nice: number;
+    idle: number;
+    iowait: number;
+    irq: number;
+    nice: number;
+    softirq: number;
+    steal: number;
+    system: number;
+    total_processes: number;
+    user: number;
+  };
+  database_total: number;
+  disk: any[]; // You might want to define a more specific interface for disk if needed
+  down: number;
+  downPackets: number;
+  downTotal: number;
+  ftp_total: number;
+  installed: boolean;
+  iostat: { [key: string]: any }; // Define a more specific interface if needed
   load: {
-    one: number;
-    five: number;
     fifteen: number;
+    five: number;
+    limit: number;
+    max: number;
+    one: number;
+    safe: number;
   };
   mem: {
-    memTotal: number;
-    memFree: number;
     memBuffers: number;
     memCached: number;
+    memFree: number;
     memRealUsed: number;
+    memTotal: number;
   };
-  network: {
-    up: number;
-    down: number;
-    upTotal: number;
-    downTotal: number;
+  network: { [key: string]: any }; // Define a more specific interface if needed
+  site_total: number;
+  system: string;
+  time: string;
+  title: string;
+  up: number;
+  upPackets: number;
+  upTotal: number;
+  user_info: {
+    data: any; // Define a more specific interface if needed
+    msg: string;
+    status: boolean;
   };
+  version: string;
 }
 
 export interface Site {

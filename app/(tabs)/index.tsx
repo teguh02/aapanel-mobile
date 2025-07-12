@@ -111,6 +111,10 @@ export default function StatsScreen() {
         apiToUse.getNetWork(),
       ]);
 
+      // console.log('systemTotal:', systemTotal);
+      // console.log('diskInfo:', diskInfo);
+      // console.log('networkInfo:', networkInfo);
+
       setSystemData(systemTotal);
       setDiskData(diskInfo);
       setNetworkData(networkInfo);
@@ -166,25 +170,45 @@ export default function StatsScreen() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
+  const checkConfiguration = async () => {
+    try {
+      const panelUrl = await AsyncStorage.getItem('panel_url');
+      const apiKey = await AsyncStorage.getItem('api_key');
+      if (panelUrl && apiKey) {
+        const newApiInstance = new AaPanelApi(panelUrl, apiKey);
+        setApi(newApiInstance);
+        setIsConfigured(true);
+        fetchData(newApiInstance, true); // Initial fetch with the new API instance
+      } else {
+        setIsConfigured(false);
+        setApi(null);
+        setSystemData(null);
+        setDiskData([]);
+        setNetworkData(null);
+      }
+    } catch (error) {
+      console.error('Error checking configuration:', error);
+      setIsConfigured(false);
+      setApi(null);
+      setSystemData(null);
+      setDiskData([]);
+      setNetworkData(null);
+    }
+  };
+
   const getMemoryUsagePercent = () => {
-    if (!systemData) return 0;
-    return Math.round((systemData.memRealUsed / systemData.memTotal) * 100);
+    if (!networkData || !networkData.mem) return 0;
+    const { memRealUsed, memTotal } = networkData.mem;
+    return Math.round((memRealUsed / memTotal) * 100);
   };
 
   const getCpuUsagePercent = () => {
-    if (!networkData || !networkData.cpu) return 0;
-    return Math.round(networkData.cpu[0] || 0);
+    if (!networkData || !networkData.cpu || networkData.cpu.length === 0) return 0;
+    // Assuming the first element of networkData.cpu is the CPU usage percentage
+    return Math.round(networkData.cpu[0] as number || 0);
   };
 
-  const getDiskUsageData = () => {
-    return diskData.map((disk, index) => ({
-      name: disk.path,
-      population: parseInt((disk.percent || '0').replace('%', '')),
-      color: `hsl(${index * 60}, 70%, 50%)`,
-      legendFontColor: themeColors.tabIconDefault,
-      legendFontSize: 12,
-    }));
-  };
+  
 
   const getBarChartData = () => {
     return {
@@ -236,8 +260,8 @@ export default function StatsScreen() {
                 <Text style={dynamicStyles.detailValue}>{systemData.system}</Text>
               </View>
               <View style={dynamicStyles.detailRow}>
-                <Text style={dynamicStyles.detailLabel}>CPU:</Text>
-                <Text style={dynamicStyles.detailValue}>{systemData.cpuType}</Text>
+                <Text style={dynamicStyles.detailLabel}>Version:</Text>
+                <Text style={dynamicStyles.detailValue}>{systemData.version}</Text>
               </View>
               <View style={dynamicStyles.detailRow}>
                 <Text style={dynamicStyles.detailLabel}>CPU Cores:</Text>
@@ -250,6 +274,22 @@ export default function StatsScreen() {
               <View style={dynamicStyles.detailRow}>
                 <Text style={dynamicStyles.detailLabel}>Used Memory:</Text>
                 <Text style={dynamicStyles.detailValue}>{formatBytes(systemData.memRealUsed * 1024)}</Text>
+              </View>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Free Memory:</Text>
+                <Text style={dynamicStyles.detailValue}>{formatBytes(systemData.memFree * 1024)}</Text>
+              </View>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Buffered Memory:</Text>
+                <Text style={dynamicStyles.detailValue}>{formatBytes(systemData.memBuffers * 1024)}</Text>
+              </View>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Cached Memory:</Text>
+                <Text style={dynamicStyles.detailValue}>{formatBytes(systemData.memCached * 1024)}</Text>
+              </View>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Uptime:</Text>
+                <Text style={dynamicStyles.detailValue}>{systemData.time}</Text>
               </View>
             </View>
           )}
@@ -286,20 +326,29 @@ export default function StatsScreen() {
 
           {/* Disk Usage */}
           {diskData.length > 0 && (
-            <View style={dynamicStyles.chartCard}>
+            <View style={dynamicStyles.detailsCard}>
               <Text style={dynamicStyles.sectionTitle}>Disk Usage</Text>
-              <PieChart
-                data={getDiskUsageData()}
-                width={screenWidth - 48}
-                height={220}
-                chartConfig={{
-                  color: (opacity = 1) => `rgba(${parseInt(themeColors.text.slice(1, 3), 16)}, ${parseInt(themeColors.text.slice(3, 5), 16)}, ${parseInt(themeColors.text.slice(5, 7), 16)}, ${opacity})`,
-                }}
-                accessor="population"
-                backgroundColor="transparent"
-                paddingLeft="15"
-                absolute
-              />
+              {diskData.map((disk, index) => (
+                <View key={index} style={dynamicStyles.diskItemContainer}>
+                  <Text style={dynamicStyles.diskItemTitle}>{disk.path} ({disk.filesystem})</Text>
+                  <View style={dynamicStyles.detailRow}>
+                    <Text style={dynamicStyles.detailLabel}>Type:</Text>
+                    <Text style={dynamicStyles.detailValue}>{disk.type}</Text>
+                  </View>
+                  <View style={dynamicStyles.detailRow}>
+                    <Text style={dynamicStyles.detailLabel}>Size (Total/Used/Avail/Percent):</Text>
+                    <Text style={dynamicStyles.detailValue}>
+                      {disk.size[0]} / {disk.size[1]} / {disk.size[2]} / {disk.size[3]}
+                    </Text>
+                  </View>
+                  <View style={dynamicStyles.detailRow}>
+                    <Text style={dynamicStyles.detailLabel}>Inodes (Total/Used/Avail/Percent):</Text>
+                    <Text style={dynamicStyles.detailValue}>
+                      {disk.inodes[0]} / {disk.inodes[1]} / {disk.inodes[2]} / {disk.inodes[3]}
+                    </Text>
+                  </View>
+                </View>
+              ))}
             </View>
           )}
 
@@ -315,11 +364,23 @@ export default function StatsScreen() {
               </View>
               <View style={dynamicStyles.detailRow}>
                 <Text style={dynamicStyles.detailLabel}>Network Up:</Text>
-                <Text style={dynamicStyles.detailValue}>{formatBytes(networkData.network.upTotal)}</Text>
+                <Text style={dynamicStyles.detailValue}>{formatBytes(networkData.upTotal)}</Text>
               </View>
               <View style={dynamicStyles.detailRow}>
                 <Text style={dynamicStyles.detailLabel}>Network Down:</Text>
-                <Text style={dynamicStyles.detailValue}>{formatBytes(networkData.network.downTotal)}</Text>
+                <Text style={dynamicStyles.detailValue}>{formatBytes(networkData.downTotal)}</Text>
+              </View>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Total Sites:</Text>
+                <Text style={dynamicStyles.detailValue}>{networkData.site_total}</Text>
+              </View>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Total FTP Accounts:</Text>
+                <Text style={dynamicStyles.detailValue}>{networkData.ftp_total}</Text>
+              </View>
+              <View style={dynamicStyles.detailRow}>
+                <Text style={dynamicStyles.detailLabel}>Total Databases:</Text>
+                <Text style={dynamicStyles.detailValue}>{networkData.database_total}</Text>
               </View>
             </View>
           )}
@@ -446,4 +507,16 @@ const getDynamicStyles = (themeColors: typeof Colors.light) => StyleSheet.create
     marginVertical: 8,
     borderRadius: 16,
   },
+  diskItemContainer: {
+    marginBottom: 16,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: themeColors.tabBarBorder,
+  },
+  diskItemTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: themeColors.text,
+    marginBottom: 8
+  }, 
 });
