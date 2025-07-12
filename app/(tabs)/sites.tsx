@@ -214,7 +214,7 @@ export default function SitesScreen() {
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <Globe size={32} color="#3B82F6" />
-          <Text style={styles.title}>Website Management</Text>
+          <Text style={styles.title}>Website</Text>
         </View>
         <TouchableOpacity style={styles.settingsButton} onPress={handleEditConfiguration}>
           <Settings size={24} color="#6B7280" />

@@ -198,7 +198,7 @@ export default function StatsScreen() {
       >
       <View style={styles.header}>
         <Server size={32} color="#3B82F6" />
-        <Text style={styles.title}>System Statistics</Text>
+        <Text style={styles.title}>Statistics</Text>
       </View>
 
       {loading && !refreshing ? (
