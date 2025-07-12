@@ -304,7 +304,7 @@ const getDynamicStyles = (themeColors: typeof Colors.light) => StyleSheet.create
   },
   emailText: {
     fontSize: 16,
-    color: themeColors.tint,
+    color: themeColors.text,
     marginLeft: 8,
     fontWeight: '600',
   },
