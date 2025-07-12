@@ -35,13 +35,11 @@ export default function StatsScreen() {
   const dynamicStyles = getDynamicStyles(themeColors);
 
   useEffect(() => {
-    checkConfiguration();
-
-    let intervalId: NodeJS.Timeout;
-    if (isConfigured) {
+    let intervalId: NodeJS.Timeout | undefined;
+    if (isConfigured && api) {
       intervalId = setInterval(() => {
-        fetchData(undefined, false);
-      }, 5000); // Refresh every 5 seconds
+        fetchData(api, false); // Pass the current API instance, no loading indicator
+      }, 3000); // Refresh every 3 seconds
     }
 
     return () => {
@@ -49,25 +47,32 @@ export default function StatsScreen() {
         clearInterval(intervalId);
       }
     };
-  }, [isConfigured, api]);
+  }, [isConfigured, api, fetchData]);
 
-  const checkConfiguration = async () => {
-    try {
-      const panelUrl = await AsyncStorage.getItem('panel_url');
-      const apiKey = await AsyncStorage.getItem('api_key');
-      
-      if (panelUrl && apiKey) {
-        setApi(new AaPanelApi(panelUrl, apiKey));
-        setIsConfigured(true);
-        fetchData(new AaPanelApi(panelUrl, apiKey), true);
-      } else {
+  // Effect for initial configuration check and setting up API instance
+  useEffect(() => {
+    const configureApp = async () => {
+      try {
+        const panelUrl = await AsyncStorage.getItem('panel_url');
+        const apiKey = await AsyncStorage.getItem('api_key');
+        
+        if (panelUrl && apiKey) {
+          const newApiInstance = new AaPanelApi(panelUrl, apiKey);
+          setApi(newApiInstance);
+          setIsConfigured(true);
+          fetchData(newApiInstance, true); // Initial fetch with the new API instance
+        } else {
+          setIsConfigured(false);
+          setApi(null);
+        }
+      } catch (error) {
+        console.error('Error configuring app:', error);
         setIsConfigured(false);
+        setApi(null);
       }
-    } catch (error) {
-      console.error('Error checking configuration:', error);
-      setIsConfigured(false);
-    }
-  };
+    };
+    configureApp();
+  }, []); // Run only once on mount
 
   const handleEditConfiguration = () => {
     Alert.alert(
@@ -145,11 +150,7 @@ export default function StatsScreen() {
   };
 
   if (isConfigured === null) {
-    return (
-      <View style={dynamicStyles.loadingContainer}>
-        <ActivityIndicator size="large" color={themeColors.tint} />
-      </View>
-    );
+    return null; // Or a blank View if preferred
   }
 
   if (!isConfigured) {
