@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "aaPanel Mobile",
-    "slug": "aaPanel-Mobile",
+    "slug": "aapanel-mobile",
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
