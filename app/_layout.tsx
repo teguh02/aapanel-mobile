@@ -18,7 +18,7 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
-      <StatusBar style={isDarkMode ? 'light' : 'dark'} backgroundColor={themeColors.background} />
+      <StatusBar style={isDarkMode ? 'light' : 'dark'} />
     </SafeAreaView>
   );
 }
