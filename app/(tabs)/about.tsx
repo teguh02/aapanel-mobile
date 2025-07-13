@@ -109,7 +109,7 @@ export default function AboutScreen() {
           Monitor your server statistics and manage websites on the go.
         </Text>
         <View style={dynamicStyles.versionContainer}>
-          <Text style={dynamicStyles.versionText}>Version 1.0.0</Text>
+          <Text style={dynamicStyles.versionText}>Version 1.0.1</Text>
         </View>
       </View>
 
