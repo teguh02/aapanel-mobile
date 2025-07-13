@@ -63,6 +63,12 @@ npx expo start
 
 ---
 
+## ⬇️ Download
+
+You can download the latest release of AaPanel Mobile from the [releases page](https://github.com/teguh02/aapanel-mobile/releases/tag/1.0.1).
+
+---
+
 ## 📸 Screenshots
 
 Here are some screenshots of the application:
